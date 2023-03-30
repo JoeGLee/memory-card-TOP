@@ -1,4 +1,5 @@
 import { useEffect,useState } from "react";
+import DisplayCards from "./displayCards";
 import uniqid from "uniqid";
 import aussie from "./pictures/aussieShep.jpg";
 import beagle from "./pictures/beagle.jpg";
@@ -12,95 +13,130 @@ import shihtuz from "./pictures/shihtuz.jpeg";
 import weiner from "./pictures/weiner.jpeg";
 
 const Cards = () =>{
-  
-
+    const [scoreArr,setScoreArr] = useState([]);
     const [cardsArr, setCardsArr] = useState([
         {
             picture: aussie,
-            name: 'aussie',
+            name: 'Aussie',
             id: uniqid(),
             order: 0,
         },
         {
             picture: beagle,
-            name: 'beagle',
+            name: 'Beagle',
             id: uniqid(),
             order: 1,
         },
         {
             picture: cattleDog,
-            name: 'cattleDog',
+            name: 'CattleDog',
             id: uniqid(),
             order: 2,
         },
         {
             picture: doberman,
-            name: 'doberman',
+            name: 'Doberman',
             id: uniqid(),
             order: 3,
         },
         {
             picture: golden,
-            name: 'golden',
+            name: 'Golden Retriever',
             id: uniqid(),
             order: 4,
         },
         {
             picture: pitbull,
-            name: 'pitbull',
+            name: 'Pitbull',
             id: uniqid(),
             order: 5,
         },
         {
             picture: poodle,
-            name: 'poodle',
+            name: 'Poodle',
             id: uniqid(),
             order: 6,
         },
         {
             picture: shiba,
-            name: 'shiba',
+            name: 'Shiba Inu',
             id: uniqid(),
             order: 7,
         },
         {
             picture: shihtuz,
-            name: 'shihtuz',
+            name: 'Shih Tuz',
             id: uniqid(),
             order: 8,
         },
         {
             picture: weiner,
-            name: 'weiner',
+            name: 'Weiner Dog',
             id: uniqid(),
             order: 9,
         }
     ]);
  
-    const randomize = () => {
-        
-        const randomizedArr = [];
+    useEffect(()=>{
+      const cards =  document.querySelectorAll(".card")
 
-        while(randomizedArr.length < 10){
+      const randomize = () => {
+        
+        const randomNumArr = [];
+        const tempArr = [];
+
+        while(randomNumArr.length < 10){
             let randomNumber = Math.floor(Math.random()* 10);
 
-            if(randomizedArr.length === 0){
-                randomizedArr.push(randomNumber);
+            if(randomNumArr.length === 0){
+                randomNumArr.push(randomNumber);
             }
             else{
-                for(let i = 0; i < randomizedArr.length; i ++){
-                    if(randomizedArr[i] !== randomNumber){
-                        randomizedArr.push(randomNumber);
-                    }
-                }
+               if(!randomNumArr.includes(randomNumber)){
+                    randomNumArr.push(randomNumber);
+               }
             }
         }
 
+        for(let i = 0; i < 10; i++)
+        {
+            tempArr.push(cardsArr[randomNumArr[i]]);
+        }
+
+        setCardsArr(tempArr);
     }
+
+    const keepScore = (e)=>{
+      if(scoreArr.length === 0){
+        setScoreArr([...scoreArr, e.target.id]);
+      }
+      else{
+        if(scoreArr.includes(e.target.id)){
+            setScoreArr([]);
+        }
+        else if(!scoreArr.includes(e.target.id)){
+            setScoreArr([...scoreArr, e.target.id]);
+          }
+     
+      }
+      console.log(scoreArr);
+    }
+
+    const gamePlay = (e) =>{
+        keepScore(e);
+        randomize();
+    }
+    cards.forEach(card => card.addEventListener("click", gamePlay));
+
+    return() => cards.forEach(card => card.removeEventListener("click", gamePlay))
+    })
+
+
     
     return(
         <div>
-            
+          <DisplayCards cardsArr={cardsArr}/>
+          <h1 className="score">Score: {scoreArr.length}</h1>
         </div>
     )
 
